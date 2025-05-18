@@ -98,6 +98,10 @@ const WelcomeScreen = () => {
       >
         <View style={styles.spacer} />
         <View style={styles.bottom}>
+          <Button mode="contained" onPress={() => router.push("./home")}>
+            Home
+          </Button>
+
           <TextInput
             mode="outlined"
             label="GitHub Username"
