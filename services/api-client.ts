@@ -2,8 +2,8 @@ import Constants from "expo-constants";
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? "";
 
-export const fetchUsers = async () => {
-  const url = API_URL;
+export const fetchDevelopers = async () => {
+  const url = "https://682d56374fae188947559802.mockapi.io/calgary_devs";
 
   try {
     const response = await fetch(url);
@@ -13,13 +13,13 @@ export const fetchUsers = async () => {
     }
     const result = await response.json();
 
-    return result.body;
+    return result;
   } catch (error) {
     console.error(error);
   }
 };
 
-export const createUser = async (userData: {
+export const createDeveloper = async (userData: {
   name: string;
   avatar: string;
   location: {
@@ -45,9 +45,9 @@ export const createUser = async (userData: {
   }
 };
 
-export const deleteUser = async (id: number) => {
+export const deleteDeveloper = async (id: number) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    const response = await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
 
     if (!response.ok) {
       throw new Error(`Failed to delete user with id ${id}`);
