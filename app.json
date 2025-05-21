@@ -37,6 +37,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "API_URL": "https://682d56374fae188947559802.mockapi.io/calgary_devs"
     }
   }
 }
