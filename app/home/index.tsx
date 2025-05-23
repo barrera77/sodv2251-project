@@ -67,23 +67,26 @@ const HomeScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.container}
     >
-      <Appbar.Header style={styles.appbar}>
-        <Button
-          mode="contained"
-          onPress={() => Alert.alert("Logout", "You have been logged out.")}
-          style={{ borderRadius: 4 }}
-        >
-          Logout
-        </Button>
-      </Appbar.Header>
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" />
         </View>
       ) : (
-        <MapView style={styles.map} region={CALGARY_REGION}>
-          {markers}
-        </MapView>
+        <>
+          <MapView style={styles.map} region={CALGARY_REGION}>
+            {markers}
+          </MapView>
+
+          <Appbar.Header style={styles.appbar}>
+            <Button
+              mode="contained"
+              onPress={() => Alert.alert("Logout", "You have been logged out.")}
+              style={{ borderRadius: 4 }}
+            >
+              Logout
+            </Button>
+          </Appbar.Header>
+        </>
       )}
     </KeyboardAvoidingView>
   );
@@ -94,15 +97,17 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
   appbar: {
     backgroundColor: "transparent",
     elevation: 2,
     justifyContent: "flex-end",
   },
-  map: {
-    flex: 1,
-  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
