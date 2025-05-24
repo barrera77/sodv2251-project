@@ -3,8 +3,8 @@ import Constants from "expo-constants";
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? "";
 
 export const fetchDevelopers = async () => {
-  const url = "https://682d56374fae188947559802.mockapi.io/calgary_devs";
-
+  // const url = "https://682d56374fae188947559802.mockapi.io/calgary_devs";
+  const url = API_URL;
   try {
     const response = await fetch(url);
 

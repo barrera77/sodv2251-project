@@ -1,12 +1,17 @@
 import { fetchDevelopers } from "@/services/api-client";
+import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
+  Modal,
   Platform,
+  Pressable,
   StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
@@ -19,16 +24,19 @@ const CALGARY_REGION: Region = {
   longitudeDelta: 0.3,
 };
 
-type User = {
+type Developer = {
   id: number;
   name: string;
   location: { latitude: number; longitude: number };
   avatar: string;
+  github: string;
 };
 
 const HomeScreen = () => {
-  const [devs, setDevs] = useState<User[]>([]);
+  const [devs, setDevs] = useState<Developer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDev, setSelectedDev] = useState<Developer | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const getDevs = async () => {
@@ -52,8 +60,7 @@ const HomeScreen = () => {
       <Marker
         key={dev.id}
         coordinate={dev.location}
-        title={dev.name}
-        description="Software Developer"
+        onPress={() => setSelectedDev(dev)}
       >
         <View style={styles.avatarContainer}>
           <Image source={{ uri: dev.avatar }} style={styles.avatar} />
@@ -86,6 +93,44 @@ const HomeScreen = () => {
               Logout
             </Button>
           </Appbar.Header>
+          {/* Modal */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={!!selectedDev}
+            onRequestClose={() => setSelectedDev(null)}
+          >
+            <TouchableWithoutFeedback onPress={() => setSelectedDev(null)}>
+              <View style={styles.modalOverlay}>
+                <Pressable onPress={() => {}} style={styles.modalContent}>
+                  {selectedDev && (
+                    <>
+                      <Image
+                        source={{ uri: selectedDev.avatar }}
+                        style={styles.avatar}
+                      />
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        {selectedDev.name}
+                      </Text>
+                      <Button
+                        onPress={() => {
+                          setSelectedDev(null);
+                          router.push({
+                            pathname: "./profile",
+                            params: { github: selectedDev.github },
+                          });
+                        }}
+                        mode="contained"
+                        style={{ marginTop: 12 }}
+                      >
+                        View Profile
+                      </Button>
+                    </>
+                  )}
+                </Pressable>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
         </>
       )}
     </KeyboardAvoidingView>
@@ -125,8 +170,21 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   avatar: {
-    width: 40,
-    height: 40,
+    width: 33,
+    height: 33,
     borderRadius: 20,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 12,
+    alignItems: "center",
   },
 });
