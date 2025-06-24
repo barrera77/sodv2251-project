@@ -1,7 +1,5 @@
-// src/context/AuthContext.tsx
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
-// Define the User type
 export type User = {
   id: number;
   name: string;
@@ -13,17 +11,14 @@ export type User = {
   };
 };
 
-// Define the shape of the AuthContext
 type AuthContextType = {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
 };
 
-// Create the context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// AuthProvider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
@@ -42,7 +37,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook for accessing the context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

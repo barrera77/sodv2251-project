@@ -105,7 +105,7 @@ const WelcomeScreen = () => {
         });
 
         console.log("New user created.");
-        user = newUser; // <-- set user for login
+        user = newUser;
       } else {
         console.log("User already exists.");
       }

@@ -62,11 +62,9 @@ export const deleteDeveloper = async (id: number) => {
 
 export const getDeveloperByUsername = async (username: string) => {
   try {
-    // Query by `name`, since your API uses name as the username field
     const response = await fetch(`${API_URL}?name=${username}`);
 
     if (!response.ok) {
-      // Instead of throwing error here, return null or undefined
       return null;
     }
 
