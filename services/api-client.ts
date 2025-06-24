@@ -21,6 +21,7 @@ export const fetchDevelopers = async () => {
 
 export const createDeveloper = async (userData: {
   name: string;
+  github: string;
   avatar: string;
   location: {
     latitude: number;
@@ -55,6 +56,25 @@ export const deleteDeveloper = async (id: number) => {
     return true;
   } catch (error) {
     console.log(`No user with id number ${id} was found`);
+    throw error;
+  }
+};
+
+export const getDeveloperByUsername = async (username: string) => {
+  try {
+    // Query by `name`, since your API uses name as the username field
+    const response = await fetch(`${API_URL}?name=${username}`);
+
+    if (!response.ok) {
+      // Instead of throwing error here, return null or undefined
+      return null;
+    }
+
+    const result = await response.json();
+
+    return Array.isArray(result) ? result[0] : result;
+  } catch (error) {
+    console.error("Error fetching user by username", error);
     throw error;
   }
 };

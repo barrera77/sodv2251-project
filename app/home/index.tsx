@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import { fetchDevelopers } from "@/services/api-client";
 import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -37,6 +38,7 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [selectedDev, setSelectedDev] = useState<Developer | null>(null);
   const router = useRouter();
+  const { logout } = useAuth();
 
   useEffect(() => {
     const getDevs = async () => {
@@ -87,7 +89,10 @@ const HomeScreen = () => {
           <Appbar.Header style={styles.appbar}>
             <Button
               mode="contained"
-              onPress={() => Alert.alert("Logout", "You have been logged out.")}
+              onPress={() => {
+                logout();
+                router.replace("/");
+              }}
               style={{ borderRadius: 4 }}
             >
               Logout

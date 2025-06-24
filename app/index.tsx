@@ -1,3 +1,5 @@
+import { useAuth } from "@/context/AuthContext";
+import { createDeveloper, getDeveloperByUsername } from "@/services/api-client";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -24,6 +26,7 @@ const WelcomeScreen = () => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<Region | null>(null);
   const router = useRouter();
+  const { login } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -75,9 +78,43 @@ const WelcomeScreen = () => {
   };
 
   const handleSignUp = async () => {
+    const trimmedUsername = githubUsername.trim();
     const isValid = await validateGitHubUsername();
-    if (isValid) {
+
+    if (!isValid) return;
+
+    try {
+      let user;
+      try {
+        user = await getDeveloperByUsername(trimmedUsername);
+      } catch (e) {
+        // User not found — create a new one
+      }
+
+      if (!user) {
+        const avatar = `https://github.com/${trimmedUsername}.png`;
+
+        const newUser = await createDeveloper({
+          name: trimmedUsername,
+          github: trimmedUsername,
+          avatar,
+          location: {
+            latitude: location?.latitude ?? 55.0,
+            longitude: location?.longitude ?? -115.0,
+          },
+        });
+
+        console.log("New user created.");
+        user = newUser; // <-- set user for login
+      } else {
+        console.log("User already exists.");
+      }
+
+      login(user);
       router.replace("/home");
+    } catch (error) {
+      console.error("Signup error:", error);
+      Alert.alert("Signup failed", "Something went wrong.");
     }
   };
 
@@ -98,10 +135,6 @@ const WelcomeScreen = () => {
       >
         <View style={styles.spacer} />
         <View style={styles.bottom}>
-          <Button mode="contained" onPress={() => router.push("./home")}>
-            Home
-          </Button>
-
           <TextInput
             mode="outlined"
             label="GitHub Username"
